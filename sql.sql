@@ -101,17 +101,75 @@ select * from students_lpu where City='Delhi' and branch='IT';
 select * from students_lpu where branch!='Mechanical';
 select * from students_lpu where age between 19 and 22 and branch='CSE';
 --  NULL Handling
-select * from students_lpu where email is NULL;
-select * from students_lpu where phonenumber is not null;
+-- select * from students_lpu where email is NULL;
+-- select * from students_lpu where phonenumber is not null;
 -- sorting
-select * from students_lpu order by CGPA desc;
-select * from students_lpu order by Student_Name;
-select * from students_lpu order by branch asc,CGPA desc;
+-- select * from students_lpu order by CGPA desc;
+-- select * from students_lpu order by Student_Name;
+-- select * from students_lpu order by branch asc,CGPA desc;
 -- Mixed
-select Student_Name,City from students_lpu where City='Delhi' and CGPA>8.5;
-select * from students_lpu where City!='Delhi';
-select * from studnets_lpu where Student_Name like 'S%' and City in ('Delhi','Jaipur');
-select * from studnets_lpu where age>20 and branch in ('CSE','IT');
-select * from studnets_lpu where City like '%a%' order by Student_Name;
-select Student_Name,CGPA from students_lpu where CGPA between 8 and 9;
-select * from students_lpu where email!=NULL;
+-- select Student_Name,City from students_lpu where City='Delhi' and CGPA>8.5;
+-- select * from students_lpu where City!='Delhi';
+-- select * from students_lpu where Student_Name like 'S%' and City in ('Delhi','Jaipur');
+-- select * from students_lpu where age>20 and branch in ('CSE','IT');
+-- select * from students_lpu where City like '%a%' order by Student_Name;
+-- select Student_Name,CGPA from students_lpu where CGPA between 8 and 9;
+-- select * from students_lpu where email!=NULL;
+-- Day6
+-- aggregate functions - to summarize the results
+-- count(*) - counts all rows including NULL values
+-- count(name) - counts rows where name not null
+select count(Student_Name) from students_lpu;
+select avg(CGPA) from students_lpu;
+select max(Attendence) from students_lpu;
+select min(age) from students_lpu;
+select sum(Fees) from students_lpu;
+select count(Student_Name) from students_lpu where City='Delhi';
+select avg(Age) from students_lpu where branch='IT';
+select min(CGPA) from students_lpu where branch='CSE';
+select count(Student_Name) from students_lpu where Student_Name like 'A%';
+select sum(Fees) from students_lpu where CGPA>8;
+-- Mixed
+ select avg(Fees) from students_lpu where City in ('Delhi','Jaipur') and CGPA>=8;
+ select count(Student_Name) from students_lpu where Student_Name like '%A' and Age between 18 and 22;
+ select max(Attendence) from students_lpu where branch!='Mechanical';
+ select sum(Fees) from students_lpu where email is not null;
+ select min(CGPA) from students_lpu where Student_Name like 'S%';
+ -- flow of execution --
+ -- from -> where -> group by -> having -> select -> order by 
+ -- group by
+ -- where and having - having is used for aggregate functions
+select branch,avg(CGPA) from students_lpu group by branch;
+select City,count(Student_Name) from students_lpu group by City;
+select branch,sum(Fees) from students_lpu group by branch;
+select branch,max(CGPA) from students_lpu group by branch;   
+select branch,min(Attendence) from students_lpu group by branch; 
+select branch from students_lpu group by branch having avg(CGPA)>8;
+select City,count(Student_Names) from students_lpu group by City having count(Student_Name)>5;
+select branch,sum(Fees) from students_lpu group by branch having sum(Fees)>500000;
+select City,avg(Attendendce) from students_lpu group by branch having avg(Attendence)>80;
+select branch,count(Student_Name) from students_lpu group by branch;
+select branch,avg(CGPA) from students_lpu group by branch;
+select City,max(Attendendce) from students_lpu group by City;
+select branch,min(Fees) from students_lpu group by branch;
+select branch,count(*) from students_lpu group by branch having count(*)>8;
+select City,avg(CGPA) from students_lpu group by branch having avg(CGPA)>8;
+select City,sum(Fees) from students_lpu group by City;
+select Branch,max(CGPA) from students_lpu group by branch;
+select Branch,min(Attendence) from students_lpu group by branch having min(Attendence)<70;
+select City,sum(Fees) from students_lpu group by City having sum(Fees)>3000000;
+SELECT Branch, SUM(Fees) AS Total_Fees
+FROM students_lpu
+GROUP BY Branch
+ORDER BY Total_Fees DESC
+LIMIT 1;
+SELECT City, avg(Attendence) AS Avg_Attendence
+FROM students_lpu
+GROUP BY City
+ORDER BY Avg_Attendence DESC
+LIMIT 1;
+select branch,avg(Attendence) from students_lpu group by branch;
+select Semester,sum(Fees) from students_lpu group by Semester;
+select City,count(*) from students_lpu group by City;
+select branch,avg(CGPA) from students_lpu group by branch having avg(CGPA)>8.5;
+select Semester,max(CGPA) from students_lpu group by Semester;
