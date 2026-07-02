@@ -173,3 +173,36 @@ select Semester,sum(Fees) from students_lpu group by Semester;
 select City,count(*) from students_lpu group by City;
 select branch,avg(CGPA) from students_lpu group by branch having avg(CGPA)>8.5;
 select Semester,max(CGPA) from students_lpu group by Semester;
+-- keys and constants
+rename table students_lpu to students;
+alter table students 
+modify column Student_Name varchar(100) not null;
+alter table students 
+modify column Age int check(Age>=18),
+modify column Gender varchar(10),
+modify column Branch varchar(30) not null,
+modify column Semester int check(Semester between 1 and 8),
+modify column CGPA decimal(3,2) check(CGPA between 0 and 10),
+modify column City varchar(50) default "Delhi",
+modify column email varchar(100) unique,
+modify column phonenumber varchar(15) unique,
+modify column Fees decimal(10,2) check(Fees>0),
+modify column Attendence decimal(5,2) check(Attendence between 0 and 100);
+truncate table students;
+desc students;
+insert into students 
+values("Ishita",101,"CSE",8.9,18,null,"Female",5,"2024-04-04",1300000,82,9392940248,null);
+insert into students 
+values("Ishita",102,"Finance",8.3,19,null,"Female",4,"2024-04-30",1300090,82,9392900248,null);
+insert into students 
+values("Raju",103,"IT",8.3,19,null,"male",8,"2024-04-05",1400090,85,9392900218,"dodo@gmail.com");
+select * from students where CGPA>=9;
+select * from students where Attendence<75;
+select * from students order by Fees desc limit 10;
+select City,count(Student_Name) from students group by City;
+select Branch,avg(CGPA) as Average_CGPA from students group by Branch;
+select Semester,count(Student_Name) from students group by Semester;
+select Branch,count(Student_Name) from students group by Branch having count(Student_Name)>30;
+select * from students where year(Addmission_Date)="2025";
+select * from students where City in ("Delhi","Noida");
+select * from students where Student_Name like "A%";
