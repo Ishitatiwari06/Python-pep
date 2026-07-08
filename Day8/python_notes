@@ -1,0 +1,9 @@
+complex datatype- used to represent complex nos 
+immutable
+x=a+bj
+x.real, x.imag
+cannot perform relational operators except(==,!=) gives TypeError
+can perform arithmetic operations
+
+zip() - combines 2 iterables value by value it also returns zip object
+# iterators(obj) can be used only once 
