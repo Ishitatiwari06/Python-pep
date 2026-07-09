@@ -7,3 +7,7 @@ can perform arithmetic operations
 
 zip() - combines 2 iterables value by value it also returns zip object
 # iterators(obj) can be used only once 
+
+any() and all() - build in func to evaluate truth conditions across an iterable
+any() - like running or over a collection 
+all() - like running and over a collection 
