@@ -109,3 +109,112 @@ select p.ProductName,p.Price,s.SupplierName from Products p join Suppliers s on 
 select p.ProductName,s.SupplierName from Products p join SupplierName s on p.SupplierID=s.SupplierID where p.Category="Electronics";
 select c.CustomerName from Customers c join Orders on c.CustomerID=Orders.CustomerID order by c.CustomerName;
 select s.SupplierName,p.ProductName from Suppliers s join Products p on s.SupplierID=p.SupplierID order by s.SupplierName;
+
+select o.OrderID,p.ProductName,o.Quantity,p.Price from Products p join Orders o on  p.ProductID=o.ProductID;
+select c.CustomerName,p.ProductName,o.Quantity from Customers c, Products p join OrderDetails o on p.ProductID=O.ProductID;
+select p.ProductName,s.SupplierName from Products p join Suppliers s on p.SupplierID=s.SupplierID where p.Price>1000;
+select c.CustomerName,o.OrderID from Customers c join Orders o on c.CustomerID=o.CustomerID where c.CustomerName like "A%";
+select p.ProductName from Products p join Suppliers s on p.SupplierID=s.SupplierID where p.ProductName like "%Tech%";
+select p.ProductName,s.SupplierName from Products p join Suppliers s on p.SupplierID=s.SupplierID where p.Price  between 500 and 3000 order by p.Price desc;
+select c.CustomerName,o.OrderID from Customers c join Orders o on c.CustomerID=o.CustomerID where c.Address="Delhi";
+select p.ProductName,o.Quantity from Products p join OrderDetails o on p.ProductID=O.ProductID where o.Quantity>5;
+select s.SupplierName from Products p join Suppliers s on p.SupplierID=s.SupplierID where p.Category in ("Electronics","Furniture");
+select c.CustomerName,o.OrderID from Customers c join Orders o on c.CustomerID=o.CustomerID where c.Address!="Mumbai";
+
+-- Advanced ques
+-- top 5 products purchased 
+select o.OrderID,p.ProductName,c.CustomerName,s.SupplierName,od.Quantity from
+OrderDetails od join Orders o on c.OrderID=o.OrderID
+join Customers c on o.CustomerID=c.CustomerID
+join Products p on od.ProductID=p.ProductID
+join Suppliers s on s.SupplierID=p.SupplierID;
+--  customers who has purchased the heighest total quantity of products display customer name and total quantity?
+
+-- Subqueries
+-- products whose amt is more than avg of all products
+select ProductName from Products where Price>(select avg(Price) from Products);
+select ProductName from Products where Price=(select max(Price) from Products);
+select c.CustomerName from Customers c join Orders o on c.CustomerID=o.CustomerID;
+-- Products supplied by suppliers from Delhi
+select distinct p.ProductName,s.SupplierID from Customers c,Products p join Suppliers s on s.SupplierID=p.SupplierID where c.Address="Delhi";
+-- Supplier supplies products with above avg price
+select distinct p.ProductName,s.SupplierID from Products p join Suppliers s on s.SupplierID=p.SupplierID where p.Price>(select avg(Price) from Products);
+-- latest order
+select * from Orders order by OrderID desc limit 1;
+-- customers who ordered expensive products
+select c.CustomerName from Products p,Customers c join Orders o on o.CustomerID=c.CustomerID where p.Price>1000;
+--  Suppliers whose products were never ordered
+select s.SupplierName from Suppliers s 
+join Products p on p.SupplierID=s.SupplierID 
+join OrderDetails o on o.ProductID=p.ProductID
+where p.ProductID!=o.ProductID;
+--  find products costing more than every stationary product
+select ProductName from Products where Price>(select Price from Products where Category="Stationery");
+
+-- String Functions
+select upper(CustomerName) from Customers;
+select lower(CustomerName) from Customers;
+select CustomerName,length(CustomerName) as Length from Customers;
+select concat(CustomerName,Address) as Name_City from Customers;
+select substr(CustomerName,1,4) from Customers;
+select replace(CustomerName,'a','*') from Customers;
+select trim('	Database Systems	');
+select upper(CustomerName),lower(Address) from Customers;
+select substr(ProductName,1,3) from Products;
+select ProductName from Products where length(ProductName)>8;
+select concat(CustomerName,' (',Address,')') as 'CustomerName(CITY)' from Customers;
+select replace(ProductName,' ','_') as Product_Name from Products;
+select Address,length(Address) as Length from Customers;
+select concat(substr(CustomerName,1,1),substr(CustomerName,locate(' ',CustomerName)+1,1)) as Initials from Customers;
+select concat('Rahul',' purchased',' laptop') as concat;
+select substr(ProductName,1,5) from Products;
+select upper(ProductName) from Products;
+select SupplierName,length(SupplierName) as Length from Suppliers;
+select trim(CustomerName) as Name from Customers;
+select concat(CustomerName,' - ',Address) as 'CustomerName - CITY' from Customers;
+
+-- Mixed Ques
+-- total amt spend by each customer
+select c.CustomerName,sum((od.quantity)*(p.Price)) as Total_Spent from OrderDetails od join Products p on od.ProductID=p.ProductID
+join Orders o on o.OrderID=od.OrderID 
+join Customers c on o.CustomerID=c.CustomerID group by c.CustomerName;
+-- customers who have placed more than 1 order
+select c.CustomerID,c.CustomerName from
+Orders o join Customers c on o.CustomerID=c.CustomerID group by c.CustomerID,c.CustomerName having count(o.OrderID)>=2;
+-- find avg price of products supplied by each supplier
+select p.ProductName,avg(p.Price) as Average_Price from Products p join Suppliers s on p.SupplierID=s.SupplierID group by p.ProductName;
+-- Top 5 most expensive products
+select ProductName from Products order by Price desc limit 5 ;
+-- Products never ordered
+select ProductName from Products where ProductID not in (select ProductID from OrderDetails);
+-- supplier name along with number of products they supply
+select s.SupplierName,count(p.ProductID) as No_of_Products from Suppliers s join Products p on s.SupplierID=p.SupplierID group by s.SupplierName;
+-- customers who purchased products from more than 1 supplier
+select c.CustomerID,c.CustomerName from Customers c join Orders o on o.CustomerID=c.CustomerID join OrderDetails od on od.OrderID=o.OrderID join Products p on p.ProductID=od.ProductID group by c.CustomerID,c.CustomerName having count(distinct p.SupplierID)>1;
+-- product ordered in highest quantity
+select p.ProductID,p.ProductName,sum(od.Quantity) as TotalQuantity from Products p join OrderDetails od on od.ProductID=p.ProductID group by p.ProductID,p.ProductName order by TotalQuantity desc;
+-- first 3 chars of product name whose price>avg price
+select substr(ProductName,1,3) as Name from Products where Price>(select avg(Price) from Products);
+-- customer name in uppercase along with their total purchase amt
+select upper(c.CustomerName),sum(p.Price*od.Quantity) as TotalAmt from Customers c 
+join Orders o on o.CustomerID=c.CustomerID 
+join OrderDetails od on od.OrderID=o.OrderID
+join Products p on p.ProductID=od.ProductID group by c.CustomerID,c.CustomerName;
+
+-- Advanced problems
+-- customers whose total purchase > avg customer purchase
+select c.CustomerName as Customer_Name,sum((od.quantity)*(p.Price)) as Total_Spent from OrderDetails od join Products p on od.ProductID=p.ProductID
+join Orders o on o.OrderID=od.OrderID 
+join Customers c on o.CustomerID=c.CustomerID group by c.CustomerID,c.CustomerName
+having Total_Spent>(select avg(CustomerTotal) from
+(select sum((od.quantity)*(p.Price)) as CustomerTotal from  OrderDetails od
+join Products p on od.ProductID=p.ProductID
+join Orders o on o.OrderID=od.OrderID group by o.CustomerID) as AvgTable); 
+-- supplier whose products are never appeared in any order
+select s.SupplierID,s.SupplierName from Suppliers s where not exists (select 1 from OrderDetails od join Products p on od.ProductID=p.ProductID where p.SupplierID=s.SupplierID);
+-- customers who placed max number of orders
+select c.CustomerName,count(o.OrderID) as no_of_orders from Orders o
+join Customers c on c.CustomerID=o.CustomerID group by c.CustomerID,c.CustomerName order by no_of_orders desc;
+-- second highest priced product
+select ProductID,ProductName,Price from Products where price=(select max(Price) from Products where Price<(select max(Price) from Products));
+-- 5th
