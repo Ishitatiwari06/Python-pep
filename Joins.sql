@@ -217,4 +217,24 @@ select c.CustomerName,count(o.OrderID) as no_of_orders from Orders o
 join Customers c on c.CustomerID=o.CustomerID group by c.CustomerID,c.CustomerName order by no_of_orders desc;
 -- second highest priced product
 select ProductID,ProductName,Price from Products where price=(select max(Price) from Products where Price<(select max(Price) from Products));
--- 5th
+-- products whose prices > avg price of products in their supplier gp
+select p1.ProductID,p1.ProductName from Products p1 where p1.Price > (select avg(p2.Price) from Products p2 where p2.SupplierID=p1.SupplierID);
+-- display cities having more than 3 customers
+select Address from Customers group by Address having count(CustomerName)>3;
+-- customers who purchased most expensive products
+select distinct c.CustomerID, c.CustomerName from Customers c 
+join Orders o on o.CustomerID=c.CustomerID 
+join OrderDetails od on od.OrderID=o.OrderID 
+join Products p on p.ProductID=od.ProductID where p.Price=(select max(Price) from Products);
+-- products ordered by at least 5 different customers
+select p.ProductID,p.ProductName from Products p 
+join OrderDetails od on od.ProductID=p.ProductID 
+join Orders o on od.OrderID=o.OrderID group by p.ProductID,p.ProductName having count(distinct o.CustomerID)>5;
+-- suppliers contributing highest revenue
+select s.SupplierID,s.SupplierName,sum(p.Price*od.Quantity) as Revenue from Suppliers s 
+join Products p on p.SupplierID=s.SupplierID 
+join OrderDetails od on od.ProductID=p.ProductID
+group by s.SupplierID,s.SupplierName 
+having Revenue=(select max(total) from (select sum(p.Price*od.Quantity) as total from Products p join OrderDetails od on od.ProductID=p.ProductID group by p.SupplierID) as t);
+-- products whose names contain exactly 6 characters
+select distinct ProductName from Products where length(ProductName)=6;
