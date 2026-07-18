@@ -2,3 +2,4 @@ Stored Procedures
   - are the precompiled set of SQL statements that can be executed any time without rewriting queries
   - code resusability, better performance, security(need not to access tables)
   - use "call <procedure_name>()" to run 
+char vs nchar - both are for fixed length but char only allows non unicode while nchar allows unicode
